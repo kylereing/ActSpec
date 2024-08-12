@@ -7,22 +7,22 @@ from torchvision import datasets, transforms as T
 
 class ActSpecData:
   
-  def __init__(self, data, layer_flag, ref_class=None, data_store=None):
+  def __init__(self, data, ref_class=None, data_store=None):
     self.samples = data
-    self.layer_flag = layer_flag
-    
     self.total_samp = self.samples.size()[0]
     self.n = self.samples.size()[1]
+    
     if len(self.samples.size()) == 3:
       self.n = self.n * self.samples.size()[2]
-      
       self.samples = torch.reshape(data, (self.total_samp, self.n))
       
     self.ref_class = ref_class
     self.data_store = data_store
+    self.net = None
+    self.activations = None
       
 
-def retrieve_data(data_flag, layer_flag, params=None):
+def retrieve_data(data_flag, params=None):
 
   data = None
   ref_class = None
@@ -58,7 +58,7 @@ def retrieve_data(data_flag, layer_flag, params=None):
     
     if params:
       ref_class = params[0]
-    data = ActSpecData(data, layer_flag, ref_class =ref_class, data_store=data_store)
+    data = ActSpecData(data, ref_class=ref_class, data_store=data_store)
 
   ################################################################################
 
@@ -81,6 +81,6 @@ def retrieve_data(data_flag, layer_flag, params=None):
     if params:
       ref_class = params[0]
       
-    data = ActSpecData(data, layer_flag,  ref_class)
+    data = ActSpecData(data, ref_class)
       
   return data

@@ -58,7 +58,7 @@ def store_activations(net, sample, layer_id):
   return act
 
 
-def modify_activations(net, layer_name, mod_input, sample):
+def modify_activations(net, layer_id, mod_input, sample):
 
       def set_activation(inp_tensor):
           def hook(model, input, output):
@@ -66,7 +66,7 @@ def modify_activations(net, layer_name, mod_input, sample):
           return hook
 
       for name, module in net.named_modules():
-        if layer_name in name:
+        if layer_id in name:
           handle = module.register_forward_hook(set_activation(mod_input))
 
       out1 = net(sample)

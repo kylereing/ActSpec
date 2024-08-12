@@ -32,10 +32,18 @@ class ActSpec:
         const_filter = []
         fo_filter = []
                 
+        samp = None
+        if data_obj.net.layer_flag == 'INTER':
+            samp = acsu.store_activations(data_obj.net.network, data_obj.samples, data_obj.net.layer_id)
+            data_obj.activations = samp
+        else:
+            samp = data_obj.samples
+            
         #check null
-        print('Checking Null')       
+        print('Checking Null')      
         for i in range(data_obj.n):
-            var_i = acsu.binarize(data_obj.samples[:, i])
+              
+            var_i = acsu.binarize(samp[:, i])
             null_vector = torch.ones_like(var_i)
             is_vari_constant = self.compute_red_threshold(var_i, null_vector, str(i), 'Null')
             is_constant, out_i = is_vari_constant
@@ -73,9 +81,15 @@ class ActSpec:
         data_inds, output_ind = subset_inds
         total_samp = data_obj.total_samp
         
-        restricted_data = data_obj.samples[:, list(data_inds)]
-        bin_res_data = acsu.binarize(restricted_data)
-        bin_output = acsu.binarize(data_obj.samples[:, output_ind])
+        samp = None
+        if data_obj.net.layer_flag == 'INTER':
+            assert data_obj.activations is not None, 'Pre compute activation data'
+            samp = data_obj.activations
+        else:
+            samp = data_obj.samples
+        
+        bin_res_data = acsu.binarize(samp[:, list(data_inds)])
+        bin_output = acsu.binarize(samp[:, output_ind])
         
         indicator = np.array([1 if i < 1 else 0 for i in range(len(data_inds))])
         ind_conv = 1.0 - indicator

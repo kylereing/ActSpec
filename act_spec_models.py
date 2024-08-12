@@ -10,6 +10,15 @@ import torch.nn as nn
 from collections import OrderedDict
 import torch
 
+class NetworkObj:
+    
+    def __init__(self, network, layer_flag='INPUT', layer_id=None, layer_size=None):
+        self.network = network
+        self.layer_flag = layer_flag
+        self.layer_id = layer_id
+        self.layer_size = layer_size
+        
+
 def retrieve_model(model_flag, params):
     
     network = None
